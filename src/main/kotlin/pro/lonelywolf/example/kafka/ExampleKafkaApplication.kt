@@ -22,7 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.util.concurrent.ListenableFutureCallback
 
-const val BOOTSTRAP_SERVER_ADDRESS = "localhost:29092"
+const val BOOTSTRAP_SERVER_ADDRESS = "localhost:9092"
 const val TOPIC = "myTopic"
 const val GROUP_ID = "myGroup"
 
