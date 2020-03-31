@@ -5,6 +5,7 @@
 * [Apache Kafka](https://kafka.apache.org/)
 * [Apache ZooKeeper](https://zookeeper.apache.org/)
 * [Spring Boot Kafka](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#boot-features-kafka)
+* [Tutorial from Baeldung](https://www.baeldung.com/spring-kafka)
 * [System Requirements for Confluent Platform](https://docs.confluent.io/current/installation/system-requirements.html)
 
 ## Prerequisite
@@ -58,7 +59,7 @@ eval $(docker-machine env confluent)
 docker run -d \
     --net=host \
     --name=zookeeper \
-    -e ZOOKEEPER_CLIENT_PORT=2181 \
+    -e ZOOKEEPER_CLIENT_PORT=32181 \
     confluentinc/cp-zookeeper:3.1.1
 ```
 
@@ -68,7 +69,7 @@ docker run -d \
 docker run -d \
     --net=host \
     --name=kafka \
-    -e KAFKA_ZOOKEEPER_CONNECT=localhost:2181 \
+    -e KAFKA_ZOOKEEPER_CONNECT=localhost:32181 \
     -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:29092 \
     confluentinc/cp-kafka:3.1.1
 ```
