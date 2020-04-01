@@ -80,10 +80,68 @@ docker-compose down
 
 ### Additional Tools
 
-##### ZooKeeper Monitoring
+##### 1. ZooKeeper Monitoring
 * `Exhibitor` from Netflix : https://github.com/soabase/exhibitor
 
-##### Kafka Monitoring
+###### Build Exhibitor
+
+현재 공식 WiKi 에서 제공하는 gradle build 파일에 오류가 있습니다 (shadow jar 버전이 틀림). 이를 수정한 `build.gradle` 파일을 공유합니다 (5.x 또는 6.x 버전의 gradle 을 사용하는 경우입니다).
+
+```groovy
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+      classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+group = 'exhibitor'
+archivesBaseName = 'exhibitor'
+version = '1.6.0'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven {
+        url "https://repository.jboss.org/nexus/content/groups/public/"
+    }
+}
+
+dependencies {
+    compile 'io.soabase.exhibitor:exhibitor-standalone:1.6.0'
+}
+
+jar {
+    manifest {
+        attributes (
+            'Main-Class': 'com.netflix.exhibitor.application.ExhibitorMain',
+            'Implementation-Version': project.version
+        )
+    }
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+assemble.dependsOn shadowJar
+``` 
+
+Build 명령은 다음과 같습니다.
+
+```shell script
+gradle shadowJar
+```
+
+실행 및 실행 옵션에 관해서는 [링크](https://github.com/soabase/exhibitor/wiki/Running-Exhibitor)를 참조하세요.
+
+##### 2. Kafka Monitoring
 * `Burrow` from LinkedIn : https://github.com/linkedin/Burrow
 * `CMAK` from Yahoo : https://github.com/yahoo/CMAK
 
