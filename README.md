@@ -15,63 +15,67 @@
 
 ## Installation
 
-### [All in one package using Confluent](https://docs.confluent.io/current/quickstart/index.html)
+### Install separately
 
-#### 1. Clone the Confluent Platform Docker Images GitHub Repository and check out the 5.4.1-post branch
-
-```shell script
-git clone https://github.com/confluentinc/examples
-cd examples
-git checkout 5.4.1-post
-```
-
-#### 2. Navigate to cp-all-in-one examples directory
-
-```shell script
-cd cp-all-in-one/
-```
-
-#### 3. Start Confluent Platform using docker compose
-
-```shell script
-docker-compose up -d --build
-```
-
-### [Install separately](https://docs.confluent.io/3.1.1/cp-docker-images/docs/quickstart.html)
-
-##### 1. [optional] Docker Machine
-
-만약 Docker 환경이 설치 되어있는 가상 환경을 구축하고 싶다면 docker machine 을 설치해서 아래의 과정을 진행하여 새로운 VirtualBox Machine 을 만들고 해당 Machine 에 접속합니다. VirtualBox 와 Docker Machine 이 설치가 되어있어야 합니다. 
-
-###### - Create and configure the Docker Machine
-```shell script
-docker-machine create --driver virtualbox --virtualbox-memory 6000 confluent
-```
-
-###### - Configure your terminal window to attach it to your new Docker Machine
-```shell script
-eval $(docker-machine env confluent)
-```
-
-##### 2. [required] ZooKeeper
+##### 1. [required] [Apache ZooKeeper](https://github.com/wurstmeister/zookeeper-docker)
 
 ```shell script
 docker run -d \
-    --net=host \
-    --name=zookeeper \
-    -e ZOOKEEPER_CLIENT_PORT=32181 \
-    confluentinc/cp-zookeeper:3.1.1
+  -p 2181:2181 \
+  --name zookeeper \
+  --restart always \
+  wurstmeister/zookeeper
 ```
 
-##### 3. [required] Kafka
+##### 2. [required] [Apache Kafka](https://github.com/wurstmeister/kafka-docker)
+
+연결 할 ZooKeeper 를 설정하기 위해서 `ZOOKEEPER_DOCKER_IP`를 찾아서실제 address 로 설정 해주어야 합니.
+```shell script
+docker inspect zookeeper
+```
+
+이때 출력되는 결과에서 `NetworkSettings > Networks > bridge > IPAddress` 를 찾으면 나오는 값 해당 docker 의 ip address 입니다. 이 값을 아래의 script 의 `{ZOOKEEPER_DOCKER_IP}` 에 채워준 후 아래의 docker 를 실행하면 됩니다. 
 
 ```shell script
 docker run -d \
-    --net=host \
-    --name=kafka \
-    -e KAFKA_ZOOKEEPER_CONNECT=localhost:32181 \
-    -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:29092 \
-    confluentinc/cp-kafka:3.1.1
+  -p 9092:9092 \
+  --name kafka \
+  -e KAFKA_ZOOKEEPER_CONNECT={ZOOKEEPER_DOCKER_IP}:2181/local \
+  -e KAFKA_ADVERTISED_HOST_NAME=localhost \
+  -e KAFKA_ADVERTISED_PORT=9092 \
+  wurstmeister/kafka
+```
+
+### All-in-One With Docker Compose
+
+[docker-compose](https://docs.docker.com/compose/install/) 가 설치 되어있다면 테스트 용도로 위의 2개의 과정을 한번에 할 수 있습니다. 우선 `docker-compose.yml` 파일을 작성합니다.
+```yaml
+version: "2"
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - 2181:2181
+    restart: always
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/local
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ADVERTISED_PORT: 9092
+```
+
+그 다음 `docker-compose.yml` 파일이 있는 경로에서 아래 script 를 실행 합니다.
+```shell script
+docker-compose up -d
+```
+
+`-d`옵션은 docker 가 background 에서 샐행이 되도록 합니다. docker 를 한번에 종료하고 싶을 때에는 아래 script 를 실행 합니다.
+```shell script
+docker-compose down
 ```
 
 ### Additional Tools
