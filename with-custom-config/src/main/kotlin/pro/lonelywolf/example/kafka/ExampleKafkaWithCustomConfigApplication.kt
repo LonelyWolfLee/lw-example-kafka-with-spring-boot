@@ -7,9 +7,9 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
 @EnableScheduling
-class ExampleKafkaApplication
+class ExampleKafkaWithCustomConfigApplication
 
 fun main(args: Array<String>) {
-  runApplication<ExampleKafkaApplication>(*args)
+  runApplication<ExampleKafkaWithCustomConfigApplication>(*args)
 }
 
