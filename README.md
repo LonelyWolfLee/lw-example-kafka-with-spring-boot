@@ -41,7 +41,9 @@ docker run -d \
   -p 9092:9092 \
   --name kafka \
   -e KAFKA_ZOOKEEPER_CONNECT={ZOOKEEPER_DOCKER_IP}:2181/local \
-  -e KAFKA_LISTENERS=PLAINTEXT://localhost:9092 \
+  -e KAFKA_ADVERTISED_HOST_NAME=localhost \
+  -e KAFKA_ADVERTISED_PORT=9092 \
+  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
   wurstmeister/kafka
 ```
 
@@ -63,7 +65,9 @@ services:
       - 9092:9092
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/local
-      KAFKA_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
 ```
 
 그 다음 `docker-compose.yml` 파일이 있는 경로에서 아래 script 를 실행 합니다.
