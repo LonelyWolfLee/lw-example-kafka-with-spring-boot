@@ -26,6 +26,20 @@ docker run -d \
   --restart always \
   wurstmeister/zookeeper
 ```
+or
+
+```shell script
+docker run -d \
+  -p 2181:2181 \
+  --name zookeeper \
+  --restart always \
+  -e ZOOKEEPER_SERVER_ID=1 \
+  -e ZOOKEEPER_SERVERS=localhsot:2888:3888 \
+  -e ZOOKEEPER_TICK_TIME=2000 \
+  -e ZOOKEEPER_INIT_LIMIT=5 \
+  -e ZOOKEEPER_CLIENT_PORT=32181 \
+  confluentinc/cp-zookeeper:5.4.1
+```
 
 ##### 2. [required] [Apache Kafka](https://github.com/wurstmeister/kafka-docker)
 
