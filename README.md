@@ -27,7 +27,6 @@ docker run -d \
   wurstmeister/zookeeper
 ```
 or
-
 ```shell script
 docker run -d \
   -p 2181:2181 \
@@ -59,6 +58,24 @@ docker run -d \
   -e KAFKA_ADVERTISED_PORT=9092 \
   -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
   wurstmeister/kafka
+```
+or
+```shell script
+docker run -d \
+  -p 9092:9092 \
+  --name kafka \
+  -e KAFKA_LISTENERS=PLAINTEXT://localhost:9092 \
+  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
+  -e KAFKA_DELETE_TOPIC_ENABLE=true \
+  -e KAFKA_AUTO_CREATE_TOPIC_ENABLE=true \
+  -e KAFKA_OFFSET_TOPIC_REPLICATION_FACTOR=1 \
+  -e KAFKA_ZOOKEEPER_CONNECT={ZOOKEEPER_DOCKER_IP}:2181 \
+  -e KAFKA_ZOOKEEPER_CONNECT_TIMEOUT_MS=6000 \
+  -e KAFKA_NUM_PARTITION=1 \
+  -e KAFKA_DEFAULT_REPLICATION_FACTOR=1 \
+  -e KAFKA_MIN_INSYNC_REPLICAS=1 \
+  -e KAFKA_NUM_PARTITION=1 \
+  confluentinc/cp-kafka:5.4.1
 ```
 
 ### All-in-One With Docker Compose
