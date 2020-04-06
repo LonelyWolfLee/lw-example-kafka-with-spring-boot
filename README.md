@@ -36,7 +36,7 @@ docker run -d \
   -e ZOOKEEPER_SERVERS=localhsot:2888:3888 \
   -e ZOOKEEPER_TICK_TIME=2000 \
   -e ZOOKEEPER_INIT_LIMIT=5 \
-  -e ZOOKEEPER_CLIENT_PORT=32181 \
+  -e ZOOKEEPER_CLIENT_PORT=2181 \
   confluentinc/cp-zookeeper:5.4.1
 ```
 
@@ -53,7 +53,7 @@ docker inspect zookeeper
 docker run -d \
   -p 9092:9092 \
   --name kafka \
-  -e KAFKA_ZOOKEEPER_CONNECT={ZOOKEEPER_DOCKER_IP}:2181/local \
+  -e KAFKA_ZOOKEEPER_CONNECT={ZOOKEEPER_DOCKER_IP}:2181 \
   -e KAFKA_ADVERTISED_HOST_NAME=localhost \
   -e KAFKA_ADVERTISED_PORT=9092 \
   -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
@@ -64,7 +64,6 @@ or
 docker run -d \
   -p 9092:9092 \
   --name kafka \
-  -e KAFKA_LISTENERS=PLAINTEXT://localhost:9092 \
   -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
   -e KAFKA_DELETE_TOPIC_ENABLE=true \
   -e KAFKA_AUTO_CREATE_TOPIC_ENABLE=true \
