@@ -17,30 +17,22 @@
 
 ### Install separately
 
-##### 1. [required] [Apache ZooKeeper](https://github.com/wurstmeister/zookeeper-docker)
+##### 1. [required] [Apache ZooKeeper](https://hub.docker.com/r/confluentinc/cp-zookeeper)
 
-```shell script
-docker run -d \
-  -p 2181:2181 \
-  --name zookeeper \
-  --restart always \
-  wurstmeister/zookeeper
-```
-or
 ```shell script
 docker run -d \
   -p 2181:2181 \
   --name zookeeper \
   --restart always \
   -e ZOOKEEPER_SERVER_ID=1 \
-  -e ZOOKEEPER_SERVERS=localhsot:2888:3888 \
+  -e ZOOKEEPER_SERVERS=localhost:2888:3888 \
   -e ZOOKEEPER_TICK_TIME=2000 \
   -e ZOOKEEPER_INIT_LIMIT=5 \
   -e ZOOKEEPER_CLIENT_PORT=2181 \
   confluentinc/cp-zookeeper:5.4.1
 ```
 
-##### 2. [required] [Apache Kafka](https://github.com/wurstmeister/kafka-docker)
+##### 2. [required] [Apache Kafka](https://hub.docker.com/r/confluentinc/cp-kafka)
 
 연결 할 ZooKeeper 를 설정하기 위해서 `ZOOKEEPER_DOCKER_IP`를 찾아서실제 address 로 설정 해주어야 합니.
 ```shell script
@@ -53,29 +45,20 @@ docker inspect zookeeper
 docker run -d \
   -p 9092:9092 \
   --name kafka \
-  -e KAFKA_ZOOKEEPER_CONNECT={ZOOKEEPER_DOCKER_IP}:2181 \
-  -e KAFKA_ADVERTISED_HOST_NAME=localhost \
-  -e KAFKA_ADVERTISED_PORT=9092 \
-  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
-  wurstmeister/kafka
-```
-or
-```shell script
-docker run -d \
-  -p 9092:9092 \
-  --name kafka \
-  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
+  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://{REACHABLE_HOST_IP_NOT_LOCALHOST}:9092 \
+  -e KAFKA_BROKER_ID=1 \
   -e KAFKA_DELETE_TOPIC_ENABLE=true \
   -e KAFKA_AUTO_CREATE_TOPIC_ENABLE=true \
-  -e KAFKA_OFFSET_TOPIC_REPLICATION_FACTOR=1 \
+  -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
   -e KAFKA_ZOOKEEPER_CONNECT={ZOOKEEPER_DOCKER_IP}:2181 \
   -e KAFKA_ZOOKEEPER_CONNECT_TIMEOUT_MS=6000 \
-  -e KAFKA_NUM_PARTITION=1 \
   -e KAFKA_DEFAULT_REPLICATION_FACTOR=1 \
   -e KAFKA_MIN_INSYNC_REPLICAS=1 \
   -e KAFKA_NUM_PARTITION=1 \
   confluentinc/cp-kafka:5.4.1
 ```
+
+`REACHABLE_HOST_IP_NOT_LOCALHOST` 는 실제로 **외부에서 접근이 가능한 host ip** 를 사용 하여야 합니다. `localhost` 로 할 경우 docker 자신의 내부 localhost 로 지정이 되어 접근이 불가능 합니다.  
 
 ### All-in-One With Docker Compose
 
