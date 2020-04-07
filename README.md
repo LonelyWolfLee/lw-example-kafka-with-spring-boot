@@ -22,8 +22,11 @@
 ```shell script
 docker run -d \
   -p 2181:2181 \
+  -p 2888:2888 \
+  -p 3888:3888 \
   --name zookeeper \
   --restart always \
+  -v {HOST_ZOOKEEPER_VOLUME}:/var/lib/zookeeper
   -e ZOOKEEPER_SERVER_ID=1 \
   -e ZOOKEEPER_SERVERS=localhost:2888:3888 \
   -e ZOOKEEPER_TICK_TIME=2000 \
@@ -31,6 +34,7 @@ docker run -d \
   -e ZOOKEEPER_CLIENT_PORT=2181 \
   confluentinc/cp-zookeeper:5.4.1
 ```
+`HOST_ZOOKEEPER_VOLUME`의 하위에는 `log` 와 `data` folder 가 생깁니다.
 
 ##### 2. [required] [Apache Kafka](https://hub.docker.com/r/confluentinc/cp-kafka)
 
