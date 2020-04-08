@@ -28,7 +28,7 @@ docker run -d \
   --restart always \
   -v {HOST_ZOOKEEPER_DATA_VOLUME}:/var/lib/zookeeper/data \
   -v {HOST_ZOOKEEPER_DATA_VOLUME}:/var/lib/zookeeper/data \
-  -v {HOST_ZOOKEEPER_SECRETSVOLUME}:/etc/zookeeper/secrets \
+  -v {HOST_ZOOKEEPER_SECRETS_VOLUME}:/etc/zookeeper/secrets \
   -e ZOOKEEPER_SERVER_ID=1 \
   -e ZOOKEEPER_SERVERS=localhost:2888:3888 \
   -e ZOOKEEPER_TICK_TIME=2000 \
