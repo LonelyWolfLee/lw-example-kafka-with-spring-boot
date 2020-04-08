@@ -35,11 +35,11 @@ class KafkaProducer(private val kafkaTemplate: KafkaTemplate<String, String>) {
     val future = kafkaTemplate.send(TOPIC, message)
     future.addCallback(object : ListenableFutureCallback<SendResult<String, String>> {
       override fun onSuccess(result: SendResult<String, String>?) {
-        println("Sent message=[$message] with offset=[${result!!.recordMetadata.offset()}]")
+        println("Sent message=[$message] to $TOPIC with offset=[${result!!.recordMetadata.offset()}]")
       }
 
       override fun onFailure(ex: Throwable) {
-        println("Unable to send message=[$message] due to : " + ex.message)
+        println("Unable to send message=[$message]  to $TOPIC due to : ${ex.message}")
       }
     })
   }
