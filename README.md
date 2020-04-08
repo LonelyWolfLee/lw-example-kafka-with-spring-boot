@@ -25,6 +25,7 @@ docker run -d \
   -p 2888:2888 \
   -p 3888:3888 \
   --name zookeeper \
+  --network net-zk \
   --restart always \
   -v {HOST_ZOOKEEPER_DATA_VOLUME}:/var/lib/zookeeper/data \
   -v {HOST_ZOOKEEPER_DATA_VOLUME}:/var/lib/zookeeper/data \
@@ -40,23 +41,17 @@ docker run -d \
 
 ##### 2. [required] [Apache Kafka](https://hub.docker.com/r/confluentinc/cp-kafka)
 
-연결 할 ZooKeeper 를 설정하기 위해서 `ZOOKEEPER_DOCKER_IP`를 찾아서실제 address 로 설정 해주어야 합니.
-```shell script
-docker inspect zookeeper
-```
-
-이때 출력되는 결과에서 `NetworkSettings > Networks > bridge > IPAddress` 를 찾으면 나오는 값 해당 docker 의 ip address 입니다. 이 값을 아래의 script 의 `{ZOOKEEPER_DOCKER_IP}` 에 채워준 후 아래의 docker 를 실행하면 됩니다. 
-
 ```shell script
 docker run -d \
   -p 9092:9092 \
   --name kafka \
-  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://{REACHABLE_HOST_IP_NOT_LOCALHOST}:9092 \
+  --network net-zk \
+  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://{REACHABLE_HOST_NOT_LOCALHOST}:9092 \
   -e KAFKA_BROKER_ID=1 \
   -e KAFKA_DELETE_TOPIC_ENABLE=true \
   -e KAFKA_AUTO_CREATE_TOPIC_ENABLE=true \
   -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
-  -e KAFKA_ZOOKEEPER_CONNECT={ZOOKEEPER_DOCKER_IP}:2181 \
+  -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
   -e KAFKA_ZOOKEEPER_CONNECT_TIMEOUT_MS=6000 \
   -e KAFKA_DEFAULT_REPLICATION_FACTOR=1 \
   -e KAFKA_MIN_INSYNC_REPLICAS=1 \
@@ -64,6 +59,7 @@ docker run -d \
   confluentinc/cp-kafka:5.4.1
 ```
 
+같은 network bridge 로 설정이 되어있으므로, zookeeper
 `REACHABLE_HOST_IP_NOT_LOCALHOST` 는 실제로 **외부에서 접근이 가능한 host ip** 를 사용 하여야 합니다. `localhost` 로 할 경우 docker 자신의 내부 localhost 로 지정이 되어 접근이 불가능 합니다.  
 
 ### All-in-One With Docker Compose
