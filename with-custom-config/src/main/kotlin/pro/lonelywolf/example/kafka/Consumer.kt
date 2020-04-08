@@ -41,6 +41,6 @@ class KafkaConsumerConfig {
 class Consumer {
   @KafkaListener(topics = [TOPIC], groupId = GROUP_ID)
   fun listen(message: String) {
-    println("Received Message in group foo: $message")
+    println("Received Message in topic $TOPIC group $GROUP_ID: $message")
   }
 }
