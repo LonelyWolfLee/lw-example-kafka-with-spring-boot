@@ -28,7 +28,7 @@ docker run -d \
   --network net-zk \
   --restart always \
   -v {HOST_ZOOKEEPER_DATA_VOLUME}:/var/lib/zookeeper/data \
-  -v {HOST_ZOOKEEPER_DATA_VOLUME}:/var/lib/zookeeper/data \
+  -v {HOST_ZOOKEEPER_LOG_VOLUME}:/var/lib/zookeeper/log \
   -v {HOST_ZOOKEEPER_SECRETS_VOLUME}:/etc/zookeeper/secrets \
   -e ZOOKEEPER_SERVER_ID=1 \
   -e ZOOKEEPER_SERVERS=localhost:2888:3888 \
@@ -37,7 +37,6 @@ docker run -d \
   -e ZOOKEEPER_CLIENT_PORT=2181 \
   confluentinc/cp-zookeeper:5.4.1
 ```
-`HOST_ZOOKEEPER_VOLUME`의 하위에는 `log` 와 `data` folder 가 생깁니다.
 
 ##### 2. [required] [Apache Kafka](https://hub.docker.com/r/confluentinc/cp-kafka)
 
@@ -69,9 +68,11 @@ docker run -d \
 version: "2"
 services:
   zookeeper:
-    image: wurstmeister/zookeeper
+    image: confluentinc/cp-zookeeper:5.4.1
     ports:
       - 2181:2181
+      - 2888:2888
+      - 3888:3888
     restart: always
 
   kafka:
