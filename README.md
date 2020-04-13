@@ -161,7 +161,7 @@ gradle shadowJar
 
 ##### 2. Kafka Monitoring
 * `Burrow` from LinkedIn : https://github.com/linkedin/Burrow
-* `CMAK` from Yahoo : https://github.com/yahoo/CMAK
+* `CMAK` from Yahoo (Known as Kafka Manager) : https://github.com/yahoo/CMAK
 
 ## Overview
 Apache Kafka® is a distributed streaming platform
