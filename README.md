@@ -174,7 +174,7 @@ Apache Kafka® is a distributed streaming platform. 실행 하기 위해서는 z
 >
 > Clustering 된 서비스들의 설정 및 Cluster Node를 관리해주며, 서비스 리더를 채택하고, 데이터 동기화 서비스를 제공합니다.
 > ZooKeeper 자체도 Cluster 구성이 가능하며, 이를 앙상블(Ensemble)이라고 부릅니다. 
-> ZooKeeper Ensemble은 홀수의 Node로 이루어지며, 과반수 이상의 Node가 장애가 생기 전 까지는 서비스를 정상으로 사용 할 수 있습니다.
+> ZooKeeper Ensemble은 홀수의 Node로 이루어지며, 과반수 이상의 Node가 장애가 생기 전 까지는 ZooKeeper 서비스를 정상으로 사용 할 수 있습니다.
 
 <p align="center">
   <img src="https://kafka.apache.org/24/images/kafka-apis.png" alt="Apache Kafka Core APIs"/>
@@ -184,3 +184,44 @@ Apache Kafka® is a distributed streaming platform. 실행 하기 위해서는 z
 * `Message Queue` 또는 `Enterprise Messaging System` 과 유사한 Record Stream 의 `Publish/Subscribe` 기능
 * 내구성 있는 방식으로 `fault-tolerant`를 지키며 Record Stream 을 저장 (디스크 기반 데이터 저장 방식)
 * Record Stream 이 발생 할 때 바로 처리 (Real-Time)
+
+### Usage
+* System 이나 Application 간에 데이터를 안정적으로 `가져오기(주는 것이 아님)` 위한 Real-Time Streaming data pipeline 구축
+* 데이터 스트림을 변환하거나, 데이터에 반응하는 Real-Time Streaming Application 구축
+
+### Concept
+
+* Kafka 는 여러 Data Center 로 걸쳐 있을수 있는 하나 이상의 서버에서 실행
+* Kafka cluster 는 `topic` 이라는 카테고리로 record 를 저장
+* 각 record는 key, value, timestamp로 구성
+
+### Jargon (용어)
+    Kafka Server == Broker
+    
+##### Producer
+
+데이터를 `topic`에 생성하는 주체입니다. Producer 는 데이터 생성을 `Load Balancing` 하기 위해 `partition`을 분리를 할 수 있습니다. 
+어느 topic 과 partition 에 데이터를 생성 할 지는 Producer가 결정 합니다. 
+partition 이 늘어나게 되면 데이터 처리 효율은 좋아지지만, 데이터의 순서는 각 partition 내에서만 보장되고 partition 간에는 보장이 되지 않습니다.
+partition 의 갯수는 한번 늘리면 줄일 수 없기 때문에 서비스 상황에 따라 잘 선택 해야 합니다.
+
+<p align="center">
+  <img src="https://kafka.apache.org/25/images/log_anatomy.png" alt="Apache Kafka Producer"/>
+</p>
+
+생성된 데이터는 설정을 통해서 얼마나 오래 유지를 할 지를 정합니다. 
+정해진 기간이 지난 데이터는 자동으로 소멸 됩니다. 
+저장된 데이터 레코드의 숫자가 아무리 많아도 데이터를 읽어오는 속도는 Linear 하기 때문에 데이터를 오랫동안 저장을 해도 문제가 없습니다.
+
+##### Consumer
+
+데이터를 읽어오는 주체입니다. Consumer 는 데이터 구독을 `Load Balancing` 하기 위해서 `Consumer Group` 을 구성하고 한 group에 여러개의 Consumer를 배치 할 수 있습니다.
+각각의 Consumer 는 하나 이상의 partition에 접근 할 수 있으며, 읽어온 위치를 기록하기 위해 Consumer 별로 `offset` 을 기록합니다.
+Consumer 가 재 시작 될 때에, 읽은 위치부터 / 처음부터 / 가장 최근의 데이터 부터 읽도록 설정을 할 수 있습니다. 
+
+<p align="center">
+  <img src="https://kafka.apache.org/25/images/log_consumer.png" alt="Apache Kafka Consumer" />
+</p>
+
+하나의 Consumer Group 은 하나의 topic을 구독하며, 하나의 partition은 Consumer Group 내의 하나의 Consumer 와 연결이 됩니다.
+그렇기 때문에 Consumer Group 내의 Consumer 숫자는 topic 의 partition 숫자보다 작게 가져가는 것이 유리합니다. 
