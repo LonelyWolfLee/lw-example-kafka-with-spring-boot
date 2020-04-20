@@ -224,4 +224,8 @@ Consumer 가 재 시작 될 때에, 읽은 위치부터 / 처음부터 / 가장 
 </p>
 
 하나의 Consumer Group 은 하나의 topic을 구독하며, 하나의 partition은 Consumer Group 내의 하나의 Consumer 와 연결이 됩니다.
-그렇기 때문에 Consumer Group 내의 Consumer 숫자는 topic 의 partition 숫자보다 작게 가져가는 것이 유리합니다. 
+그렇기 때문에 Consumer Group 내의 Consumer 숫자는 topic 의 partition 숫자보다 작게 가져가는 것이 유리합니다.
+
+<p align="center">
+  <img src="https://kafka.apache.org/25/images/consumer-groups.png" alt="Apache Kafka Consumer Group" />
+</p>
