@@ -103,7 +103,7 @@ docker-compose down
 
 ###### Build Exhibitor
 
-현재 공식 WiKi 에서 제공하는 gradle build 파일에 오류가 있습니다 (shadow jar 버전이 틀림). 이를 수정한 `build.gradle` 파일을 공유합니다 (5.x 또는 6.x 버전의 gradle 을 사용하는 경우입니다).
+최신 버전의 Exhibitor를 사용하고 싶으시다면 직접 빌드를 해서 사용을 하시면 됩니다. 이떄 사용 가능한 zookeeper의 버전은 3.4.14 까지입니다.(3.5.x 이상은 지원 안함) 현재 공식 WiKi 에서 제공하는 gradle build 파일에 오류가 있습니다 (shadow jar 버전이 틀림). 이를 수정한 `build.gradle` 파일을 공유합니다 (5.x 또는 6.x 버전의 gradle 을 사용하는 경우입니다).
 
 ```groovy
 buildscript {
@@ -121,7 +121,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'exhibitor'
 archivesBaseName = 'exhibitor'
-version = '1.6.0'
+version = '1.7.1'
 
 repositories {
     jcenter()
@@ -132,7 +132,7 @@ repositories {
 }
 
 dependencies {
-    compile 'io.soabase.exhibitor:exhibitor-standalone:1.6.0'
+    compile 'io.soabase.exhibitor:exhibitor-standalone:1.7.1'
 }
 
 jar {
@@ -161,16 +161,26 @@ gradle shadowJar
 
 ##### 2. Kafka Monitoring
 * `Burrow` from LinkedIn : https://github.com/linkedin/Burrow
-* `CMAK` from Yahoo (Known as Kafka Manager) : https://github.com/yahoo/CMAK
+* `CMAK` from Yahoo (Known as Kafka Manager, zookeeper 3.5 이상 필요) : https://github.com/yahoo/CMAK
 
 ## Overview
-Apache Kafka® is a distributed streaming platform
+Apache Kafka® is a distributed streaming platform. 실행 하기 위해서는 zookeeper 설치가 필요합니다.
+
+> ##### Apache 주키퍼(ZooKeeper)란?
+> 
+> Cluster로 구성된 서버들간의 설정/데이터 를 조율하고 동기화 관리를 해주는 분산 코디네이션 서비스 입니다. ZooKeeper를 사용하면 사용자는 서비스 코디네이션에 신경 쓰지 않고 개발에 집중 할 수 있습니다.
+>
+> **"ZooKeeper is a centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services"**
+>
+> Clustering 된 서비스들의 설정 및 Cluster Node를 관리해주며, 서비스 리더를 채택하고, 데이터 동기화 서비스를 제공합니다.
+> ZooKeeper 자체도 Cluster 구성이 가능하며, 이를 앙상블(Ensemble)이라고 부릅니다. 
+> ZooKeeper Ensemble은 홀수의 Node로 이루어지며, 과반수 이상의 Node가 장애가 생기 전 까지는 서비스를 정상으로 사용 할 수 있습니다.
+
+<p align="center">
+  <img src="https://kafka.apache.org/24/images/kafka-apis.png" alt="Apache Kafka Core APIs"/>
+</p>
 
 ### Key Capabilities
 * `Message Queue` 또는 `Enterprise Messaging System` 과 유사한 Record Stream 의 `Publish/Subscribe` 기능
 * 내구성 있는 방식으로 `fault-tolerant`를 지키며 Record Stream 을 저장 (디스크 기반 데이터 저장 방식)
 * Record Stream 이 발생 할 때 바로 처리 (Real-Time)
-
-<p align="center">
-  <img src="https://kafka.apache.org/24/images/kafka-apis.png" alt="Apache Kafka Core APIs"/>
-</p>
